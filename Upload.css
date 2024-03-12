@@ -1,30 +1,28 @@
 html,
 body {
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
+  font-family: "Times New Roman", Times, serif;
 }
 .grid {
   display: grid;
-  grid-template-rows: 0.12fr auto;
+  /* grid-template-rows: 0.12fr auto; */
   grid-template-columns: repeat(12, 1fr);
   height: 100vh;
   gap: 1px;
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
 }
 .grid-item-1 {
   grid-column: span 12;
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
 }
 .grid-item-2 {
   grid-column: span 2;
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
 }
 .grid-item-3 {
   grid-column: span 7;
-  background-color: rgb(250, 247, 245);
-  display: flex;
-  justify-content: center;
-  align-items: start;
-  margin-top: 2.7%;
+  margin: 5%;
+  position: relative;
 }
 #uploadButton {
   width: 93%;
@@ -32,25 +30,43 @@ body {
   border-style: dashed;
   border-width: 0.5px;
   border-radius: 2%;
-  background-color: rgb(248, 242, 235);
+  border-color: rgb(222, 222, 221);
+  background-color: #37a0bf;
+}
+.navigationButtons {
+  margin-top: 20px;
+}
+
+#previousButton {
+  background-color: #37a0bf;
+  border-color: rgb(222, 222, 221);
+  padding: 4px 10px;
+  /* margin-left: 10%; */
+}
+#nextButton {
+  background-color: #37a0bf;
+  border-color: rgb(222, 222, 221);
+  padding: 4px 20px;
+  /* margin-left: 1%; */
 }
 .grid-item-4 {
   grid-column: span 3;
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(8, 1fr);
   gap: 5px;
+  margin-top: 9.6%;
 }
 .partyNumber {
   grid-column: span 3;
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 .dropdownButton {
-  max-width: 1000px;
+  border-color: rgb(222, 222, 221);
 }
 .firstButton {
   display: flex;
@@ -64,17 +80,29 @@ body {
   border-style: dashed;
   border-color: rgb(222, 222, 221);
   border-width: 0.5px;
-  background-color: rgb(250, 247, 245);
-
- /*  margin: 5px;
-  padding: 10px;
-  background-color: lightblue;
-  cursor: pointer;
-  position: absolute;
-  z-index: 1; */
+  background-color: #37a0bf;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
+
+.bi-fonts {
+  margin-top: 10%;
+  font-size: 160%;
+}
+
+.bi-pencil {
+  margin-top: 10%;
+  font-size: 130%;
+}
+
+.bi-calendar-event {
+  margin-top: 10%;
+  font-size: 120%;
+}
+
 .bottomCard {
-  background-color: rgb(250, 247, 245);
+  background-color: #37a0bf;
   grid-column: span 3;
   border-width: 1px;
 }
@@ -87,60 +115,7 @@ body {
   margin-left: 10%;
 }
 
-.uploadContainer {
-  display: flex;
-  align-items: center;
-}
-.signYourSelf {
-  padding: 10px 20px;
-  background-color: #0000;
-  color: black;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 20px;
-  margin-left: 56.5%;
-  margin-right: 1.6%;
-}
-
-.signYourSelf:hover {
-  background-color: rgb(199, 202, 202);
-  color: black;
-}
-.save {
-  padding: 10px 20px;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 20px;
-  margin-left: 1.6%;
-}
-.save:hover {
-  background-color: black;
-  color: white;
-}
-.send {
-  padding: 10px 20px;
-  background-color: white;
-  color: black;
-  border: 3px solid black;
-  border-radius: 25px;
-  cursor: pointer;
-  font-size: 20px;
-}
-.send:hover {
-  background-color: black;
-  color: white;
-}
-.docuSealImage {
-  width: 3%;
-  margin-left: 2%;
-}
-.docuSealText {
-  font-size: x-large;
-  font-weight:bold;
-  padding: 10px;
-  margin-top: 1.1%;
+.cashe-logo {
+  width: 15%;
+  height: 70%;
 }
