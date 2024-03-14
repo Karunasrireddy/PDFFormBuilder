@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     pdfjsLib
       .getDocument(pdfUrl)
       .promise.then(function (pdf) {
-        console.log("Number of pages in pdf " + pdf.numPages);
+        console.log("****************" + pdf.numPages);
         noOfpages = pdf.numPages;
         return pdf.getPage(currentPage);
       })
@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .catch(function (error) {
             console.error("Error rendering PDF:", error);
           });
+        displayPageNumber();
       });
   }
 
@@ -79,6 +80,42 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
+  let selectedPartyColor = "red";
+  document
+    .getElementById("addFirstParty")
+    .addEventListener("click", function () {
+      var partyButton = document.getElementById("partyButton");
+      partyButton.innerHTML =
+        '<i class="bi bi-circle-fill circle party" id="partyCircle"></i>First Party';
+      selectedPartyColor = "red";
+    });
+
+  document
+    .getElementById("addSecondParty")
+    .addEventListener("click", function () {
+      var partyButton = document.getElementById("partyButton");
+      partyButton.innerHTML =
+        '<i class="bi bi-circle-fill circle party blue"></i> Second Party';
+      selectedPartyColor = "blue";
+    });
+
+  document
+    .getElementById("addThirdParty")
+    .addEventListener("click", function () {
+      var partyButton = document.getElementById("partyButton");
+      partyButton.innerHTML =
+        '<i class="bi bi-circle-fill circle party green"></i> Third Party';
+      selectedPartyColor = "green";
+    });
+  document
+    .getElementById("addFourthParty")
+    .addEventListener("click", function () {
+      var partyButton = document.getElementById("partyButton");
+      partyButton.innerHTML =
+        '<i class="bi bi-circle-fill circle party yellow"></i> Fourth Party';
+      selectedPartyColor = "yellow";
+    });
+
   pdfCanvas.addEventListener("dragover", function (event) {
     event.preventDefault();
   });
@@ -90,13 +127,13 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!pdfLoaded) {
       return; // Exit the function if PDF is not loaded
     }
-    // const fieldType = event.dataTransfer.getData("text/plain");
 
     // Create new input field with the specified field type
     const inputField = createInputField(
       event.clientX,
       event.clientY,
-      "Text"
+      "Text",
+      selectedPartyColor
     );
 
     // Add event listeners for dragging
@@ -113,7 +150,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // document.body.appendChild(inputField);
   });
 
-  function createInputField(x, y, fieldType) {
+  function createInputField(x, y, fieldType, color) {
     pdfCanvasDimensions = pdfCanvas.getBoundingClientRect();
     const inputContainer = document.createElement("div");
     inputContainer.style.position = "absolute";
@@ -123,16 +160,24 @@ document.addEventListener("DOMContentLoaded", function () {
     // Create label to display field type
     const label = document.createElement("div");
     label.innerText = fieldType;
-    label.contentEditable = true; // Make the label editable
     label.style.background = "white";
     label.style.color = "black";
     label.style.padding = "2px";
     label.style.border = "1px solid black";
     label.style.position = "absolute";
-    label.style.top = "-20px"; // Adjust the position as needed
+    label.style.top = "-29px"; // Adjust the position as needed
     label.style.left = "0";
     label.style.zIndex = "9999"; // Ensure it appears on top
     inputContainer.appendChild(label);
+
+    const circleIcon = document.createElement("i");
+    circleIcon.className = "bi bi-circle-fill";
+    circleIcon.style.color = color;
+    circleIcon.style.position = "absolute";
+    circleIcon.style.left = "28px";
+    circleIcon.style.top = "50%";
+    circleIcon.style.transform = "translateY(-50%)";
+    label.appendChild(circleIcon);
 
     // Create input field
     const inputField = document.createElement("input");
@@ -141,6 +186,7 @@ document.addEventListener("DOMContentLoaded", function () {
     inputField.style.height = "35px";
     inputField.style.border = "1px solid black";
     inputField.style.left = `${x}px`;
+    // inputField.style.left = `${x + 20}px`;
     inputField.style.top = `${y}px`;
     inputContainer.appendChild(inputField);
 
@@ -167,14 +213,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add event listeners for dragging
     inputField.addEventListener("mousedown", startDragging);
-
-    label.addEventListener("keydown", function (event) {
-      if (event.key === "Backspace" && label.innerText.trim() === "") {
-        // If Backspace key is pressed and the label is empty, set it back to the original field type
-        label.innerText = fieldType;
-        event.preventDefault(); // Prevent the default behavior of the Backspace key
-      }
-    });
 
     pdfCanvas.parentNode.appendChild(inputContainer);
 
@@ -231,7 +269,15 @@ document.addEventListener("DOMContentLoaded", function () {
     // console.log("pcd  " + pcd);
     // console.log("activeInputFieldX  " + x1 + "  activeInputFieldY  " + y1);
     pdfCanvasDimensions = pdfCanvas.getBoundingClientRect();
-    console.log("activeInputFieldX  " + activeInputField.style.left + "  activeInputFieldY  " + activeInputField.style.top);
+    console.log(
+      "Page " +
+        currentPage +
+        "Pdf CoOrdinants  : X : " +
+        activeInputField.style.left +
+        "   Y :" +
+        activeInputField.style.top
+    );
+    // console.log("activeInputFieldX  " + activeInputField.style.left + "  activeInputFieldY  " + activeInputField.style.top);
     isDragging = false;
     activeInputField = null;
     // Remove event listeners for mousemove and mouseup
@@ -250,6 +296,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
       removePreviousPageInputs(nxtPage);
       addCurrentPageInputs(currentPage);
+      updatePageNumber();
     });
 
   document.getElementById("nextButton").addEventListener("click", function () {
@@ -260,6 +307,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     removePreviousPageInputs(prevPage);
     addCurrentPageInputs(currentPage);
+    updatePageNumber();
   });
 
   function removePreviousPageInputs(pPage) {
@@ -273,17 +321,36 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputFields[cPage]) {
       for (let i = 0; i < inputFields[cPage].length; i++) {
         pdfCanvas.parentNode.appendChild(inputFields[cPage][i]);
-        console.log("************")
-        console.log("Input fields x co-ordinates page " +inputFields[cPage][i].style.left);
-        console.log("Input fields y co-ordinates page " +inputFields[cPage][i].style.top)
+        console.log("****************");
+        console.log(
+          "Input fields x co-ordinates in page " +
+            inputFields[cPage][i].style.top
+        );
+        console.log(
+          "Input fields y co-ordinates in page " +
+            inputFields[cPage][i].style.left
+        );
       }
     }
   }
-  document.querySelectorAll(".buttonClass").forEach((button) => {
-    button.addEventListener("dragstart", function (event) {
-      const fieldType = button.dataset.type;
-      // Start dragging with data transfer
-      event.dataTransfer.setData("text/plain", fieldType);
-    });
-  });
+
+  
+
+  function displayPageNumber() {
+    const pageNumberContainer = document.createElement("div");
+    pageNumberContainer.id = "pageNumberContainer";
+    pageNumberContainer.style.position = "absolute";
+    pageNumberContainer.style.top = "40px";
+    pageNumberContainer.style.left = "530px";
+    pageNumberContainer.style.color = "#000";
+    pageNumberContainer.style.fontSize = "14px";
+    pdfCanvas.parentNode.appendChild(pageNumberContainer);
+    updatePageNumber();
+  }
+
+  // Function to update page number
+  function updatePageNumber() {
+    const pageNumberContainer = document.getElementById("pageNumberContainer");
+    pageNumberContainer.innerText = `Page ${currentPage}`;
+  }
 });

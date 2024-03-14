@@ -1,6 +1,6 @@
 html,
 body {
-  /* background-color: #37a0bf; */
+  background-color: #e6f2f5;
   font-family: "Times New Roman", Times, serif;
 }
 .grid {
@@ -24,6 +24,12 @@ body {
   margin: 5%;
   position: relative;
 }
+
+.grid-item-5 {
+  grid-column: span 12;
+  /* background-color: #37a0bf; */
+}
+
 #uploadButton {
   width: 93%;
   height: 48%;
@@ -98,13 +104,18 @@ body {
 
 .bi-calendar-event {
   margin-top: 10%;
-  font-size: 130%;
+  font-size: 120%;
 }
 
 .bottomCard {
   /* background-color: #37a0bf; */
   grid-column: span 3;
-  border-width: 1px;
+  width: 313px;
+  border: 1px solid #ccc;
+  margin-top: -8%;
+  margin-left: 75%;
+  padding: 10px;
+  font-size: 90%;
 }
 .circle {
   color: red;
@@ -120,9 +131,30 @@ body {
   height: 70%;
 }
 
-.save{
+.save {
   background-color: #37a0bf;
   border-color: #37a0bf;
-  padding: 4px 10px;
-  margin-left: 77%;
+  margin-left: 78%;
+  padding: 2px 10px;
+}
+
+.circle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.party {
+  color: red; /* Default color for the party circle */
+}
+.party.blue {
+  color: blue; /* Blue color for the party circle */
+}
+.party.green {
+  color: green; /* Green color for the party circle */
+}
+.party.yellow {
+  color: yellow; /* Yellow color for the party circle */
 }
