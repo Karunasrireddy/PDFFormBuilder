@@ -1,6 +1,6 @@
 html,
 body {
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
   font-family: "Times New Roman", Times, serif;
 }
 .grid {
@@ -9,15 +9,15 @@ body {
   grid-template-columns: repeat(12, 1fr);
   height: 100vh;
   gap: 1px;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
 }
 .grid-item-1 {
   grid-column: span 12;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
 }
 .grid-item-2 {
   grid-column: span 2;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
 }
 .grid-item-3 {
   grid-column: span 7;
@@ -31,7 +31,7 @@ body {
   border-width: 0.5px;
   border-radius: 2%;
   border-color: rgb(222, 222, 221);
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
 }
 .navigationButtons {
   margin-top: 20px;
@@ -39,19 +39,19 @@ body {
 
 #previousButton {
   background-color: #37a0bf;
-  border-color: rgb(222, 222, 221);
+  border-color: #37a0bf;
   padding: 4px 10px;
   /* margin-left: 10%; */
 }
 #nextButton {
   background-color: #37a0bf;
-  border-color: rgb(222, 222, 221);
+  border-color: #37a0bf;
   padding: 4px 20px;
   /* margin-left: 1%; */
 }
 .grid-item-4 {
   grid-column: span 3;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(8, 1fr);
@@ -60,7 +60,7 @@ body {
 }
 .partyNumber {
   grid-column: span 3;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -80,7 +80,7 @@ body {
   border-style: dashed;
   border-color: rgb(222, 222, 221);
   border-width: 0.5px;
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -98,11 +98,11 @@ body {
 
 .bi-calendar-event {
   margin-top: 10%;
-  font-size: 120%;
+  font-size: 130%;
 }
 
 .bottomCard {
-  background-color: #37a0bf;
+  /* background-color: #37a0bf; */
   grid-column: span 3;
   border-width: 1px;
 }
@@ -118,4 +118,11 @@ body {
 .cashe-logo {
   width: 15%;
   height: 70%;
+}
+
+.save{
+  background-color: #37a0bf;
+  border-color: #37a0bf;
+  padding: 4px 10px;
+  margin-left: 77%;
 }

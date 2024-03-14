@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
     pdfjsLib
       .getDocument(pdfUrl)
       .promise.then(function (pdf) {
-        console.log("****************" + pdf.numPages);
+        console.log("Number of pages in pdf " + pdf.numPages);
         noOfpages = pdf.numPages;
         return pdf.getPage(currentPage);
       })
@@ -90,6 +90,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (!pdfLoaded) {
       return; // Exit the function if PDF is not loaded
     }
+    // const fieldType = event.dataTransfer.getData("text/plain");
 
     // Create new input field with the specified field type
     const inputField = createInputField(
@@ -122,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Create label to display field type
     const label = document.createElement("div");
     label.innerText = fieldType;
+    label.contentEditable = true; // Make the label editable
     label.style.background = "white";
     label.style.color = "black";
     label.style.padding = "2px";
@@ -165,6 +167,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add event listeners for dragging
     inputField.addEventListener("mousedown", startDragging);
+
+    label.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace" && label.innerText.trim() === "") {
+        // If Backspace key is pressed and the label is empty, set it back to the original field type
+        label.innerText = fieldType;
+        event.preventDefault(); // Prevent the default behavior of the Backspace key
+      }
+    });
 
     pdfCanvas.parentNode.appendChild(inputContainer);
 
@@ -210,7 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Update the position of the active input field being dragged
     activeInputField.style.left = `${event.clientX - offsetX}px`;
     activeInputField.style.top = `${event.clientY - offsetY}px`;
-    console.log("when mouseMove, in handle dragging, left "+activeInputField.style.left+" top "+activeInputField.style.top);
+    // console.log("when mouseMove, in handle dragging, left "+activeInputField.style.left+" top "+activeInputField.style.top);
   }
 
   function stopDragging() {
@@ -263,8 +273,17 @@ document.addEventListener("DOMContentLoaded", function () {
     if (inputFields[cPage]) {
       for (let i = 0; i < inputFields[cPage].length; i++) {
         pdfCanvas.parentNode.appendChild(inputFields[cPage][i]);
+        console.log("************")
+        console.log("Input fields x co-ordinates page " +inputFields[cPage][i].style.left);
+        console.log("Input fields y co-ordinates page " +inputFields[cPage][i].style.top)
       }
     }
   }
-  
+  document.querySelectorAll(".buttonClass").forEach((button) => {
+    button.addEventListener("dragstart", function (event) {
+      const fieldType = button.dataset.type;
+      // Start dragging with data transfer
+      event.dataTransfer.setData("text/plain", fieldType);
+    });
+  });
 });
