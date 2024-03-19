@@ -128,11 +128,13 @@ document.addEventListener("DOMContentLoaded", function () {
       return; // Exit the function if PDF is not loaded
     }
 
+    const fieldType = event.dataTransfer.getData("text/plain");
+
     // Create new input field with the specified field type
     const inputField = createInputField(
       event.clientX,
       event.clientY,
-      "Text",
+      fieldType,
       selectedPartyColor
     );
 
@@ -156,38 +158,45 @@ document.addEventListener("DOMContentLoaded", function () {
     inputContainer.style.position = "absolute";
     inputContainer.style.left = `${x}px`;
     inputContainer.style.top = `${y}px`;
+    inputContainer.style.border = `1px solid ${color}`;
 
     // Create label to display field type
     const label = document.createElement("div");
     label.innerText = fieldType;
     label.style.background = "white";
-    label.style.color = "black";
+    label.style.color = `${color}`;
     label.style.padding = "2px";
-    label.style.border = "1px solid black";
+    label.style.border = `1px solid ${color}`;
     label.style.position = "absolute";
     label.style.top = "-29px"; // Adjust the position as needed
     label.style.left = "0";
     label.style.zIndex = "9999"; // Ensure it appears on top
     inputContainer.appendChild(label);
 
-    const circleIcon = document.createElement("i");
-    circleIcon.className = "bi bi-circle-fill";
-    circleIcon.style.color = color;
-    circleIcon.style.position = "absolute";
-    circleIcon.style.left = "28px";
-    circleIcon.style.top = "50%";
-    circleIcon.style.transform = "translateY(-50%)";
-    label.appendChild(circleIcon);
+    // const circleIcon = document.createElement("i");
+    // circleIcon.className = "bi bi-circle-fill";
+    // circleIcon.style.color = color;
+    // circleIcon.style.position = "absolute";
+    // circleIcon.style.left = "28px";
+    // circleIcon.style.top = "50%";
+    // circleIcon.style.transform = "translateY(-50%)";
+    // inputContainer.appendChild(circleIcon);
 
     // Create input field
     const inputField = document.createElement("input");
     inputField.type = "text";
     inputField.style.width = "160px";
     inputField.style.height = "35px";
-    inputField.style.border = "1px solid black";
+    inputField.style.border = `1px solid ${color}`;
     inputField.style.left = `${x}px`;
     // inputField.style.left = `${x + 20}px`;
     inputField.style.top = `${y}px`;
+    inputField.addEventListener("click", function(event) {
+      event.preventDefault();
+      inputField.innerText = fieldType;
+      // const fieldType = "Date"; // You can modify this to identify the field type based on the input field clicked
+      createPopup(fieldType);
+  });
     inputContainer.appendChild(inputField);
 
     // Create close button
@@ -213,6 +222,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Add event listeners for dragging
     inputField.addEventListener("mousedown", startDragging);
+
+    
 
     pdfCanvas.parentNode.appendChild(inputContainer);
 
@@ -334,7 +345,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 
-  
+  document.querySelectorAll(".buttonClass").forEach((button) => {
+    button.addEventListener("dragstart", function (event) {
+      const fieldType = button.dataset.type;
+      // Start dragging with data transfer
+      event.dataTransfer.setData("text/plain", fieldType);
+    });
+  });
 
   function displayPageNumber() {
     const pageNumberContainer = document.createElement("div");
@@ -353,4 +370,95 @@ document.addEventListener("DOMContentLoaded", function () {
     const pageNumberContainer = document.getElementById("pageNumberContainer");
     pageNumberContainer.innerText = `Page ${currentPage}`;
   }
+
+// Function to create and display a popup based on field type
+function createPopup(fieldType) {
+  const popupContainer = document.createElement("div");
+  popupContainer.id = "popupContainer";
+  popupContainer.style.position = "absolute";
+  popupContainer.style.top = "50%";
+  popupContainer.style.left = "50%";
+  popupContainer.style.transform = "translate(-50%, -50%)";
+  popupContainer.style.background = "#fff";
+  popupContainer.style.padding = "20px";
+  popupContainer.style.border = "1px solid #ccc";
+  popupContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.1)";
+  
+  let popupContent;
+  if (fieldType === "Text") {
+      popupContent = document.createElement("input");
+      popupContent.type = "text";
+      popupContent.placeholder = "Enter text";
+  } else if (fieldType === "Signature") {
+      popupContent = document.createElement("canvas");
+      popupContent.width = 300;
+      popupContent.height = 150;
+      popupContent.style.border = "1px solid #ccc";
+      popupContent.style.cursor = "crosshair";
+      const context = popupContent.getContext("2d");
+      let isDrawing = false;
+      popupContent.addEventListener("mousedown", function (event) {
+          isDrawing = true;
+          const x = event.clientX - popupContent.getBoundingClientRect().left;
+          const y = event.clientY - popupContent.getBoundingClientRect().top;
+          context.beginPath();
+          context.moveTo(x, y);
+      });
+      popupContent.addEventListener("mousemove", function (event) {
+          if (isDrawing) {
+              const x = event.clientX - popupContent.getBoundingClientRect().left;
+              const y = event.clientY - popupContent.getBoundingClientRect().top;
+              context.lineTo(x, y);
+              context.stroke();
+          }
+      });
+      popupContent.addEventListener("mouseup", function () {
+          isDrawing = false;
+      });
+      popupContent.addEventListener("mouseleave", function () {
+          isDrawing = false;
+      });
+  } else if (fieldType === "Date") {
+      popupContent = document.createElement("input");
+      popupContent.type = "date";
+  }
+  
+  const submitButton = document.createElement("button");
+  submitButton.innerText = "Submit";
+  submitButton.addEventListener("click", function() {
+      let enteredValue;
+      if (fieldType === "Signature") {
+          // For signature, you may want to get the image data of the canvas
+          const signatureCanvas = popupContent;
+          enteredValue = signatureCanvas.toDataURL(); // This gives the signature image as data URL
+      } else {
+          enteredValue = popupContent.value;
+      }
+      console.log("Entered value:", enteredValue);
+      document.body.removeChild(popupContainer);
+  });
+  
+  popupContainer.appendChild(popupContent);
+  popupContainer.appendChild(submitButton);
+  
+  document.body.appendChild(popupContainer);
+}
+
+
+  // // Modify the event listener for clicking on input field
+  // pdfCanvas.addEventListener("click", function (event) {
+  //   event.preventDefault();
+
+  //   // Check if PDF is loaded before allowing clicking
+  //   if (!pdfLoaded) {
+  //     return; // Exit the function if PDF is not loaded
+  //   }
+
+  //   // Identify the field type based on the clicked element or any other logic you have
+  //   const fieldType = "Text"; // For example, you can modify this to identify the field type based on the clicked element
+
+  //   // Create and display popup based on the field type
+  //   createPopup(fieldType);
+  // });
+  
 });

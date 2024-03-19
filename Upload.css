@@ -15,14 +15,29 @@ body {
   grid-column: span 12;
   /* background-color: #37a0bf; */
 }
+
 .grid-item-2 {
-  grid-column: span 2;
+  grid-column: span 12;
   /* background-color: #37a0bf; */
 }
+/* .grid-item-2 {
+  grid-column: span 2;
+  background-color: #37a0bf;
+} */
 .grid-item-3 {
-  grid-column: span 7;
+  grid-column: span 9;
   margin: 5%;
   position: relative;
+}
+
+.grid-item-4 {
+  grid-column: span 3;
+  /* background-color: #37a0bf; */
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  gap: 5px;
+  margin-top: 9.6%;
 }
 
 .grid-item-5 {
@@ -47,7 +62,7 @@ body {
   background-color: #37a0bf;
   border-color: #37a0bf;
   padding: 4px 10px;
-  /* margin-left: 10%; */
+  margin-left: 30%;
 }
 #nextButton {
   background-color: #37a0bf;
@@ -55,15 +70,7 @@ body {
   padding: 4px 20px;
   /* margin-left: 1%; */
 }
-.grid-item-4 {
-  grid-column: span 3;
-  /* background-color: #37a0bf; */
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(8, 1fr);
-  gap: 5px;
-  margin-top: 9.6%;
-}
+
 .partyNumber {
   grid-column: span 3;
   /* background-color: #37a0bf; */
