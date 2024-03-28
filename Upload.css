@@ -2,6 +2,10 @@ html,
 body {
   background-color: #e6f2f5;
   font-family: "Times New Roman", Times, serif;
+  /* font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  font-size: 13px; */
 }
 .grid {
   display: grid;
@@ -61,13 +65,17 @@ body {
 #previousButton {
   background-color: #37a0bf;
   border-color: #37a0bf;
+  color: white;
   padding: 4px 10px;
   margin-left: 30%;
+  border-radius: 5px;
 }
 #nextButton {
   background-color: #37a0bf;
   border-color: #37a0bf;
+  color: white;
   padding: 4px 20px;
+  border-radius: 5px;
   /* margin-left: 1%; */
 }
 
@@ -80,6 +88,11 @@ body {
 }
 .dropdownButton {
   border-color: rgb(222, 222, 221);
+}
+
+.dropdown-menu{
+  /* opacity: 0.9; */
+  text-align: center;
 }
 .firstButton {
   display: flex;
@@ -119,7 +132,7 @@ body {
   grid-column: span 3;
   width: 313px;
   border: 1px solid #ccc;
-  margin-top: -8%;
+  margin-top: -7%;
   margin-left: 75%;
   padding: 10px;
   font-size: 90%;
@@ -141,8 +154,10 @@ body {
 .save {
   background-color: #37a0bf;
   border-color: #37a0bf;
+  color: white;
   margin-left: 78%;
   padding: 2px 10px;
+  border-radius: 5px;
 }
 
 .circle {
