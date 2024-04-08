@@ -11,12 +11,19 @@ document.addEventListener("DOMContentLoaded", function () {
   let pdfCanvasDimensions;
   let fieldType;
   let submitterId = 1;
-  let submitterName = "firstParty";
+  let submitterName = "Employee";
   let inputFieldCounter = 0;
   let fieldObject;
   let fields = [];
   let submitters = [];
   let closeButton;
+  let label;
+  let templateData;
+  let base64Data;
+  let areaX;
+  let areaY;
+  let areaW;
+  let areaH;
 
   const pdfCanvas = document.createElement("canvas");
   pdfCanvas.id = "pdfCanvas";
@@ -69,6 +76,7 @@ document.addEventListener("DOMContentLoaded", function () {
     reader.readAsDataURL(file);
     reader.onload = function (event) {
       pdfUrl = event.target.result;
+      base64Data = pdfUrl.split(",")[1];
       renderPDF(currentPage);
     };
   }
@@ -89,48 +97,40 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
   let selectedPartyColor = "red";
-  document
-    .getElementById("addFirstParty")
-    .addEventListener("click", function () {
-      var partyButton = document.getElementById("partyButton");
-      partyButton.innerHTML =
-        '<i class="bi bi-circle-fill circle party" id="partyCircle"></i>Employee';
-      selectedPartyColor = "red";
-      submitterId = 1;
-      submitterName = "firstParty";
-    });
+  document.getElementById("addEmployee").addEventListener("click", function () {
+    var partyButton = document.getElementById("partyButton");
+    partyButton.innerHTML =
+      '<i class="bi bi-circle-fill circle party" id="partyCircle"></i>Employee';
+    selectedPartyColor = "red";
+    submitterId = 1;
+    submitterName = "Employee";
+  });
 
-  document
-    .getElementById("addSecondParty")
-    .addEventListener("click", function () {
-      var partyButton = document.getElementById("partyButton");
-      partyButton.innerHTML =
-        '<i class="bi bi-circle-fill circle party blue"></i> Employer';
-      selectedPartyColor = "blue";
-      submitterId = 2;
-      submitterName = "secondParty";
-    });
+  document.getElementById("addEmployer").addEventListener("click", function () {
+    var partyButton = document.getElementById("partyButton");
+    partyButton.innerHTML =
+      '<i class="bi bi-circle-fill circle party blue"></i> Employer';
+    selectedPartyColor = "blue";
+    submitterId = 2;
+    submitterName = "Employer";
+  });
 
-  document
-    .getElementById("addThirdParty")
-    .addEventListener("click", function () {
-      var partyButton = document.getElementById("partyButton");
-      partyButton.innerHTML =
-        '<i class="bi bi-circle-fill circle party green"></i> Agency';
-      selectedPartyColor = "green";
-      submitterId = 3;
-      submitterName = "thirdParty";
-    });
-  document
-    .getElementById("addFourthParty")
-    .addEventListener("click", function () {
-      var partyButton = document.getElementById("partyButton");
-      partyButton.innerHTML =
-        '<i class="bi bi-circle-fill circle party yellow"></i> Client';
-      selectedPartyColor = "yellow";
-      submitterId = 4;
-      submitterName = "fourthParty";
-    });
+  document.getElementById("addAgency").addEventListener("click", function () {
+    var partyButton = document.getElementById("partyButton");
+    partyButton.innerHTML =
+      '<i class="bi bi-circle-fill circle party green"></i> Agency';
+    selectedPartyColor = "green";
+    submitterId = 3;
+    submitterName = "Agency";
+  });
+  document.getElementById("addClient").addEventListener("click", function () {
+    var partyButton = document.getElementById("partyButton");
+    partyButton.innerHTML =
+      '<i class="bi bi-circle-fill circle party yellow"></i> Client';
+    selectedPartyColor = "yellow";
+    submitterId = 4;
+    submitterName = "Client";
+  });
 
   pdfCanvas.addEventListener("dragover", function (event) {
     event.preventDefault();
@@ -154,18 +154,33 @@ document.addEventListener("DOMContentLoaded", function () {
       selectedPartyColor
     );
 
+    areaX = parseFloat(inputField.style.top.slice(0, -2));
+    areaY = parseFloat(inputField.style.left.slice(0, -2));
+    areaW = parseFloat(
+      inputField.querySelector("input").style.width.slice(0, -2)
+    );
+    areaH = parseFloat(
+      inputField.querySelector("input").style.height.slice(0, -2)
+    );
+
     fieldObject = {
+      // name: label.innerText,
+      name: "FirstName",
       id: inputField.id,
       required: false,
       type: fieldType,
-      submitter_uuid: submitterId,
+      submitter_uuid: submitterId.toString(),
       areas: [
         {
           page: currentPage,
-          x: inputField.style.top,
-          y: inputField.style.left,
-          w: inputField.querySelector("input").style.width,
-          h: inputField.querySelector("input").style.height,
+          x: parseFloat(inputField.style.top.slice(0, -2)),
+          y: parseFloat(inputField.style.left.slice(0, -2)),
+          w: parseFloat(
+            inputField.querySelector("input").style.width.slice(0, -2)
+          ),
+          h: parseFloat(
+            inputField.querySelector("input").style.height.slice(0, -2)
+          ),
         },
       ],
     };
@@ -174,8 +189,8 @@ document.addEventListener("DOMContentLoaded", function () {
     let submitter_present = false; // Initialize submitter_present to false
 
     submitterObject = {
-      submitter_Id: submitterId,
-      submitter_Name: submitterName,
+      name: submitterName,
+      id: submitterId.toString(),
     };
 
     if (submitters.length === 0) {
@@ -183,7 +198,7 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
       for (let i = 0; i < submitters.length; i++) {
         // Correct loop condition
-        if (submitterObject.submitter_Id === submitters[i].submitter_Id) {
+        if (submitterObject.id === submitters[i].id) {
           submitter_present = true;
           break; // No need to continue looping if the submitter is already present
         }
@@ -217,8 +232,9 @@ document.addEventListener("DOMContentLoaded", function () {
     inputContainer.style.border = `1px solid ${color}`;
 
     // Create label to display field type
-    const label = document.createElement("div");
+    label = document.createElement("div");
     label.innerText = fieldType;
+    label.contentEditable = true; // Make the label editable
     label.style.background = "white";
     label.style.color = `${color}`;
     label.style.padding = "2px";
@@ -227,6 +243,11 @@ document.addEventListener("DOMContentLoaded", function () {
     label.style.top = "-29px"; // Adjust the position as needed
     label.style.left = "0";
     label.style.zIndex = "9999"; // Ensure it appears on top
+    // // Inside the createInputField function after creating the label element
+    // label.addEventListener("input", function () {
+    //   // Update the name property of the corresponding fieldObject
+    //   fieldObject.name = label.innerText;
+    // });
     inputContainer.appendChild(label);
 
     // Create input field
@@ -265,8 +286,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       let submittersCount = 0;
-      let dmySubmitterId ;
-      let dmySubmitter ={};
+      let dmySubmitterId;
+      let dmySubmitter = {};
       for (const field of fields) {
         if (field.id === e.target.parentNode.id) {
           fields.splice(fields.indexOf(field), 1);
@@ -274,27 +295,35 @@ document.addEventListener("DOMContentLoaded", function () {
           break;
         }
       }
-      for(const field of fields){
-        if(dmySubmitterId === field.submitter_uuid){
+      for (const field of fields) {
+        if (dmySubmitterId === field.submitter_uuid) {
           submittersCount++;
         }
       }
-      for(let i = 0;i<submitters.length;i++){
-        if(submitters[i].submitter_Id === dmySubmitterId){
+      for (let i = 0; i < submitters.length; i++) {
+        if (submitters[i].id === dmySubmitterId) {
           dmySubmitter = submitters[i];
           break;
         }
       }
-      if(submittersCount === 0){
-        submitters.splice(submitters.indexOf(dmySubmitter),1);
+      if (submittersCount === 0) {
+        submitters.splice(submitters.indexOf(dmySubmitter), 1);
       }
-      
+
       console.log("submittersCount " + submittersCount);
     });
     inputContainer.appendChild(closeButton);
 
     // Add event listeners for dragging
     inputField.addEventListener("mousedown", startDragging);
+
+    label.addEventListener("keydown", function (event) {
+      if (event.key === "Backspace" && label.innerText.trim() === "") {
+        // If Backspace key is pressed and the label is empty, set it back to the original field type
+        label.innerText = fieldType;
+        event.preventDefault(); // Prevent the default behavior of the Backspace key
+      }
+    });
 
     pdfCanvas.parentNode.appendChild(inputContainer);
 
@@ -322,8 +351,8 @@ document.addEventListener("DOMContentLoaded", function () {
     activeInputField.style.top = `${event.clientY - offsetY}px`;
     for (const field of fields) {
       if (activeInputField.id === field.id) {
-        field.areas[0].x = activeInputField.style.left;
-        field.areas[0].y = activeInputField.style.top;
+        field.areas[0].x = parseFloat(activeInputField.style.left.slice(0, -2));
+        field.areas[0].y = parseFloat(activeInputField.style.top.slice(0, -2));
         break;
       }
     }
@@ -339,20 +368,6 @@ document.addEventListener("DOMContentLoaded", function () {
         "   Y :" +
         activeInputField.style.top
     );
-
-    fetch("https://jsonplaceholder.typicode.com/posts", {
-      method: "POST",
-      body: JSON.stringify({
-        title: activeInputField.style.left,
-        body: activeInputField.style.top,
-        userId: submitterId,
-      }),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((response) => response.json())
-      .then((json) => console.log(json));
 
     isDragging = false;
     activeInputField = null;
@@ -519,7 +534,7 @@ document.addEventListener("DOMContentLoaded", function () {
     popupCloseButton.style.borderColor = "#37a0bf";
     popupCloseButton.style.marginRight = "10px";
     popupCloseButton.addEventListener("click", function () {
-        document.body.removeChild(popupContainer);
+      document.body.removeChild(popupContainer);
     });
     // popupContainer.appendChild(closeButton);
 
@@ -549,6 +564,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Convert the overlay canvas to a data URL
         enteredValue = overlayCanvas.toDataURL();
         // Set the value of the input field to the data URL
+        // inputField.style.backgroundImage = `url(${enteredValue})`;
         inputField.style.backgroundSize = "cover";
         inputField.style.backgroundRepeat = "no-repeat";
         // Hide the signature canvas
@@ -572,10 +588,106 @@ document.addEventListener("DOMContentLoaded", function () {
     document.body.appendChild(popupContainer);
   }
 
+  function showPopup(message, isSuccess) {
+    const popupContainer = document.createElement("div");
+    popupContainer.textContent = message;
+    popupContainer.style.color = isSuccess ? "green" : "red"; // Set color based on isSuccess
+    popupContainer.style.position = "fixed";
+    popupContainer.style.top = "10%";
+    popupContainer.style.left = "50%";
+    popupContainer.style.transform = "translate(-50%, -50%)";
+    popupContainer.style.background = "rgba(255, 255, 255, 0.9)";
+    popupContainer.style.padding = "20px";
+    popupContainer.style.borderRadius = "5px";
+    popupContainer.style.boxShadow = "0 0 10px rgba(0, 0, 0, 0.1)";
+    document.body.appendChild(popupContainer);
+
+    // Remove the popup after a certain duration
+    setTimeout(() => {
+        popupContainer.remove();
+    }, 3000); // 3 seconds
+}
+
+
+
+
   let saveButton = document.getElementsByClassName("save")[0];
   saveButton.addEventListener("click", function () {
-    console.log(fields);
-    console.log(submitters);
-  });
+    /* console.log(fields);
+    console.log(submitters); */
+    templateData = {
+      templateName: "template50",
+      fields: fields,
+      submittersInfo: submitters,
+      preserveOrder: "random",
+    };
+    //debugger
+    const formData = new FormData();
+    formData.append("templateData", JSON.stringify(templateData));
+    formData.append("file", base64Data);
+    console.log(templateData);
 
+    const requestOptionsPost = {
+      method: "POST",
+      headers: {
+        // 'Content-Type': 'application/json', // Example header, replace with your desired headers
+        Authorization:
+          "Bearer eyJraWQiOiJUQ3ZIcnJBQnFcL0NRT0hCZ0NsMmZQVXQ5bG1zWFwvREVlbWVCMVNrbjhtVmc9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJhNTFmNWM3Ny0yOGI1LTQxZTAtYjk3YS1kNDdhYzQ1YTUzYTUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzhhZjM3Y2I5LTg4MmYtNDA3NC1iYjBhLTg1OWU5MTY2ZTY5NCIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX3dxM0xEUE1ZaSIsImNsaWVudF9pZCI6IjdraGdsZTExOGkzNG90Y3MwNmUzYWIwYW80IiwiZXZlbnRfaWQiOiI0ZWRhZmU4ZC00ZTUwLTQwYmItYTY1ZS04OTkxZjc0ZTY4YzIiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNzEyMzA4MDQ3LCJleHAiOjE3MTIzMjYwNDcsImlhdCI6MTcxMjMwODA0NywianRpIjoiMGIwNTY0NmQtNjUxZi00M2NkLWFhYTktYTJiNjk3YmVmZGQ4IiwidXNlcm5hbWUiOiJwYXZpbGxpb2FkbWluIn0.QQWsIxAUdTnVTUrOvEAvn-bjF5IchntGPDBpdA_MyNj2ORGpp3CtJgB1O97fS84mjnaSdAK2IjTw0B-wba_kzmTUhNNVCRgMJng0dbzs_TaWTzzjh_QNyyon646ocgDIKfGOy_mlwR7aAHF9p8cwkwEQMliYzHbxrgWcfmHVizHhrETXtgR2GoAt7kCVGISIpPXxoMnctul5wFzNr7C4hXLGXBpuiZCufX99rxKUvHj9twkJ1d_KEhP3e9go09A56aqQQNj44bOsNpRLn-SrQzxyBX9mnyECtNYudzGzYHZKa3M2iH_2hDg4RUEqE36JV2-IHEK8Ns5C6UJoDCAODA",
+        tenantId: "NA", // Example Authorization header
+      },
+      body: formData,
+    };
+
+    fetch(
+      "https://dev.pavillio.com/api/practice/v0.1/signatures/createTemplate",
+      requestOptionsPost
+    )
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok!");
+        }
+        return response.json(); // Parse the JSON data
+      })
+      .then((data) => {
+        if (data) {
+          // Data posted successfully
+          showPopup("Template Created successfully", true); // Green color
+        } else {
+          // Data posting failed
+          showPopup("Failed to Create Template", false); // Red color
+        }
+        console.log(data); // Handle the retrieved data
+        /* if(data.id) {
+        // localStorage.setItem('submittedDataId',data.id)
+        getData(data); 
+       }*/
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+        showPopup("Failed to Create Template ", false); // Red color
+      });
+
+    // const requestOptionsGet = {
+    //   method: 'GET',
+    //   headers: {
+    //     'Content-Type': 'application/json', // Example header, replace with your desired headers
+    //     'Authorization': 'Bearer eyJraWQiOiJUQ3ZIcnJBQnFcL0NRT0hCZ0NsMmZQVXQ5bG1zWFwvREVlbWVCMVNrbjhtVmc9IiwiYWxnIjoiUlMyNTYifQ.eyJzdWIiOiJhNTFmNWM3Ny0yOGI1LTQxZTAtYjk3YS1kNDdhYzQ1YTUzYTUiLCJkZXZpY2Vfa2V5IjoidXMtZWFzdC0xXzhhZjM3Y2I5LTg4MmYtNDA3NC1iYjBhLTg1OWU5MTY2ZTY5NCIsImlzcyI6Imh0dHBzOlwvXC9jb2duaXRvLWlkcC51cy1lYXN0LTEuYW1hem9uYXdzLmNvbVwvdXMtZWFzdC0xX3dxM0xEUE1ZaSIsImNsaWVudF9pZCI6IjdraGdsZTExOGkzNG90Y3MwNmUzYWIwYW80IiwiZXZlbnRfaWQiOiIwZThiY2Y4ZC00ODJiLTQxZmItYmU2ZC03MGUzMWU1MDU4Y2YiLCJ0b2tlbl91c2UiOiJhY2Nlc3MiLCJzY29wZSI6ImF3cy5jb2duaXRvLnNpZ25pbi51c2VyLmFkbWluIiwiYXV0aF90aW1lIjoxNzEyMTE5Mzg2LCJleHAiOjE3MTIxMzczODYsImlhdCI6MTcxMjExOTM4NiwianRpIjoiNGQwMzQ3ZDItODZkZi00NTU5LTliN2YtNTM1NTRmZDE0OTE5IiwidXNlcm5hbWUiOiJwYXZpbGxpb2FkbWluIn0.YrZ63JFrJueZKaIHkXNHyuT3KpcNynk_6qVQ-ZuvvpOu5lhyXaMkY4bQblmUOaX1jHV05dXUhGAXKRu_fAi--HMQPS16rS7GeEZlGye9z53pIL22tDMqIEG9l4rBPEc2c1EmR1BUEMkz-nbpEFAqK7oTkxZCx7DcMB6d1ULcjZx_wCaGnWa2KqURddNhZfnTODwAL4TQYoj0zkwcR9DsoVMVHsgXzC7oN1jyYXNpEHnF_kpW0ea0eAJ8G24GmbUIsiR2Qqk3diGiKog2myxhenBb0DgzvCXjQFfOgHM4R5s34wqBDwjETPcNU-5dcmhk4g9d5U90DqLaoWDztpoLvw',
+    //     'tenantId' : 'NA' // Example Authorization header
+    //   }
+    // };
+
+    // fetch("https://dev.pavillio.com/api/practice/v0.1/signatures/getTemplates",requestOptionsGet)
+    // .then((response) => {
+    //   if (!response.ok) {
+    //     throw new Error("Network response was not ok");
+    //   }
+    //   return response.json(); // Parse the JSON data
+    // })
+    // .then((data) => {
+    //   console.log(data); // Handle the retrieved data
+    // })
+    // .catch((error) => {
+    //   console.error("There was a problem with the fetch operation:", error);
+    // });
+  });
 });

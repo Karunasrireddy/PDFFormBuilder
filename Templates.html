@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Popup Example</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <link rel="stylesheet" href="Templates.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"
+    />
+  </head>
+  <body>
+    <div>
+      <div class="homeContainer">
+        <img
+          class="cashe-logo mt-3"
+          src="images/cashe-logo 1.svg"
+          alt="cashe-logo"
+        />
+      </div>
+      <div class="homeContainer">
+        <h1 class="documentTemplates mt-3">Document Templates</h1>
+        <!-- <button class="upload mt-3"><i class="bi bi-upload"></i> UPLOAD</button> -->
+        <button id="openPopupCreate" class="Create mt-3">
+          <i class="bi bi-plus"></i> CREATE
+        </button>
+      </div>
+
+      <div id="popupContainerCreate" class="popupContainerCreate">
+        <div class="popupCreate">
+          <div class="popupHeaderCreate">
+            <h4>New Document Template</h4>
+            <span id="closePopupCreate" class="closePopupCreate">&times;</span>
+          </div>
+          <hr />
+          <input
+            type="text"
+            id="documentName"
+            placeholder="Document Name"
+            class="form-control searchField"
+            required
+          />
+          <div class="folderText">
+            <span><i class="bi bi-folder"></i> Default</span>
+            <span class="changeFolder"> Change Folder</span>
+          </div>
+          <button id="createButton" class="btn createButton">CREATE</button>
+        </div>
+      </div>
+
+      <div id="cards-container">getData</div>
+      <div id="submittersDiv"></div>
+    </div>
+    
+    <!-- <div id="submitterPopup"></div>
+    <div id="popupContainer" class="popupContainer">
+      <div class="popup">
+        <div class="popupHeader">
+          <h4>New Document Template</h4>
+          <span id="closePopup" class="closePopup">&times;</span>
+        </div>
+        <hr />
+        <div id="phoneContent" class="content">
+          Phone content here
+          <div class="card phoneCard">
+            <div class="card-body phonebody">
+              <div class="form-group row submittersDiv"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div> -->
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <script src="Templates.js"></script>
+  </body>
+</html>
